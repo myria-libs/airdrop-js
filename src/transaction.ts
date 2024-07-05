@@ -5,6 +5,7 @@
 // External imports below this line
 import {
     BaseTransactionOptions,
+    Chain,
     EstimateGasOptions,
     PreparedTransaction,
     SendTransactionOptions,
@@ -41,15 +42,34 @@ import {
 } from './constant';
 import {
     Address,
+    CreateRpcClientOptions,
     ExtraGasOptions,
     GasFeeInfo,
     GenerateMerkleTreeInfo,
     RetryOptions,
+    SupportingChain,
     WhiteListItem,
 } from './type';
 import { retry } from './retry';
+import { ethereum, sepolia } from 'thirdweb/chains';
 
 // Internal Functions
+/**
+ * Retrieve thirdweb chain from a supporting chain in our sdk
+ *
+ * @param {SupportingChain} supportingChain - The selected chain by invoker.
+ * @returns {Chain} A thirdweb chain.
+ */
+const getThirdWebChain = (supportingChain: SupportingChain): Chain => {
+    switch (supportingChain) {
+        case SupportingChain.ETHEREUM:
+            return ethereum;
+            break;
+        case SupportingChain.SEPOLIA:
+            return sepolia;
+    }
+};
+
 /**
  * Sends a transaction using the provided wallet.
  *
@@ -86,14 +106,24 @@ const doSubmitTransaction = async (
  * Returns an RPC request that can be used to make JSON-RPC requests
  *
  * @param {ThirdwebClient} client - Thirdweb client.
- * @param {Chain} chain - The chain to interact with @see {@link SupportingChain}.
+ * @param {SupportingChain} selectingChain - The selecting chain.
  */
 /* eslint-disable @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types */
 export const getRpcClientByChain = (
     client: ThirdwebClient,
-    chain = DEFAULT_CHAIN,
+    options: CreateRpcClientOptions,
 ) => {
-    return getRpcClient({ client, chain });
+    const { selectingChain, chain } = options;
+    if (chain) {
+        return getRpcClient({
+            client,
+            chain,
+        });
+    }
+    return getRpcClient({
+        client,
+        chain: getThirdWebChain(selectingChain),
+    });
 };
 
 /**
@@ -129,7 +159,7 @@ export const getGasFeeInfo = async (
         extraOnRetryPercentage = DEFAULT_EXTRA_ON_RETRY_PERCENTAGE,
     } = extraGasOptions;
     const { chain, client } = transaction;
-    const rpcClient = getRpcClientByChain(client, chain);
+    const rpcClient = getRpcClientByChain(client, { chain });
     // Estimate gas use for the transaction
     // -> gas limit
     const gasLimit = await estimateGas({
@@ -179,17 +209,17 @@ export const getGasFeeInfo = async (
  *
  * @param {Address} address - The Ethereum address of Sender.
  * @param {ThirdwebClient} client - Thirdweb client.
- * @param {Chain} chain - The chain to interact with @see {@link SupportingChain}.
+ * @param {SupportingChain} selectingChain - The selecting chain.
  * @param {boolean} isLogResult - Whether to log the result or not. Default true.
  *  @returns {Promise<number>} Promise object represents the next transaction nonce
  */
 export const getNextNonce = async (
     address: Address,
     client: ThirdwebClient,
-    chain = DEFAULT_CHAIN,
+    options: CreateRpcClientOptions,
     isLogResult = true,
 ): Promise<number> => {
-    const rpcClient = getRpcClientByChain(client, chain);
+    const rpcClient = getRpcClientByChain(client, options);
     const transactionNonce = await eth_getTransactionCount(rpcClient, {
         address,
     });
@@ -234,18 +264,18 @@ export const getOwnerOfContract = async (
  *
  * @param {Address} address - The ethereum smart contract address.
  * @param {ThirdwebClient} client - Thirdweb client.
- * @param {Chain} chain - The chain to interact with @see {@link SupportingChain}.
+ * @param {SupportingChain} selectingChain - The selecting chain.
  * @returns The Thirdweb contract.
  */
 /* eslint-disable @typescript-eslint/explicit-function-return-type*/
 export const getThirdwebContract = (
     address: Address,
     client: ThirdwebClient,
-    chain = DEFAULT_CHAIN,
+    selectingChain: SupportingChain,
 ) => {
     return getContract({
         client,
-        chain,
+        chain: getThirdWebChain(selectingChain),
         address,
     });
 };
@@ -460,7 +490,9 @@ export async function retryPrepareAndSubmitRawTransaction(
     const { client, chain } = transaction;
     return retry<TransactionReceipt>(async (retryCount) => {
         // Get transaction nonce
-        const nextNonce = await getNextNonce(account.address, client, chain);
+        const nextNonce = await getNextNonce(account.address, client, {
+            chain,
+        });
         // Calculate gas fee of a transaction
         const gasFeeInfo = await getGasFeeInfo(
             { transaction, account },

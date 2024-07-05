@@ -1,3 +1,5 @@
+import { Chain } from 'thirdweb';
+
 export type Address = string;
 
 /**
@@ -75,3 +77,31 @@ export type RetryOptions = {
     retries?: number;
     delay?: number;
 };
+
+/**
+ * @description Combines members of an intersection into a readable type.
+ * @see {@link https://twitter.com/mattpocockuk/status/1622730173446557697?s=20&t=NdpAcmEFXY01xkqU3KO0Mg}
+ * @example
+ * Prettify<{ a: string } & { b: string } & { c: number, d: bigint }>
+ * => { a: string, b: string, c: number, d: bigint }
+ */
+export type Prettify<T> = {
+    [K in keyof T]: T[K];
+} & {};
+
+/**
+ * Configured options when creating a thirdweb chain either specify a SupportingChain or Chain
+ * @typedef {Object} CreateThirdwebChainOptions
+ * @property {SupportingChain} selectingChain - The selecting chain in case of chain skip.
+ * @property {Chain} chain- The thirdweb chain in case of selectingChain skip.
+ */
+export type CreateRpcClientOptions = Prettify<
+    | {
+          selectingChain: SupportingChain;
+          chain?: never;
+      }
+    | {
+          selectingChain?: never;
+          chain: Chain;
+      }
+>;
