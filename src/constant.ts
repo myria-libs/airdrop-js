@@ -1,4 +1,4 @@
-import { sepolia } from "thirdweb/chains";
+import { sepolia } from 'thirdweb/chains';
 
 // Gas fee
 export const DEFAULT_EXTRA_GAS_PERCENTAGE = 10;

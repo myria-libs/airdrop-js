@@ -2,7 +2,7 @@ export type Address = string;
 
 /**
  * Configured extra gas as you are bidding for your transaction to be included in the next block.
- * 
+ *
  * @typedef {Object} ExtraGasOptions
  * @property {number} extraMaxPriorityFeePerGasPercentage - The percentage as extra amount add on top up maxPriorityFeePerGas.
  * @property {number} extraGasPercentage- The percentage as extra amount add on top up gas limit.
@@ -11,7 +11,7 @@ export type Address = string;
 export type ExtraGasOptions = {
     extraMaxPriorityFeePerGasPercentage?: number;
     extraGasPercentage?: number;
-    extraOnRetryPercentage?: number
+    extraOnRetryPercentage?: number;
 };
 
 /**
@@ -38,9 +38,9 @@ export type GasFeeInfo = {
  * @property {number} amount - Indicates the allocated amount in ether format for recipient.
  */
 export type WhiteListItem = {
-    recipient: Address,
-    amount: number
-}
+    recipient: Address;
+    amount: number;
+};
 
 /**
  * The generated merkle tree info.
@@ -49,8 +49,8 @@ export type WhiteListItem = {
  * @property {string} snapshotUri - Indicates snapshotUri value in ipfs format.
  */
 export type GenerateMerkleTreeInfo = {
-    merkleRoot: string,
-    snapshotUri: string,
+    merkleRoot: string;
+    snapshotUri: string;
 };
 
 /**
@@ -62,8 +62,8 @@ export enum SupportingChain {
     // Mainnet
     ETHEREUM = 'ethereum',
     // Testnet
-    SEPOLIA = 'sepolia'
-};
+    SEPOLIA = 'sepolia',
+}
 
 /**
  * Configured options on retry.
@@ -73,5 +73,5 @@ export enum SupportingChain {
  */
 export type RetryOptions = {
     retries?: number;
-    delay?: number
+    delay?: number;
 };

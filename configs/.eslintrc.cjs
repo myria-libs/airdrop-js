@@ -14,7 +14,7 @@ module.exports = {
         node: true,
         jest: true,
     },
-    ignorePatterns: ['.eslintrc.js', '**/*.test.ts'],
+    ignorePatterns: ['.eslintrc.cjs', '**/*.test.ts'],
     rules: {
         '@typescript-eslint/interface-name-prefix': 'off',
         '@typescript-eslint/explicit-function-return-type': 'error',
@@ -25,6 +25,7 @@ module.exports = {
             'error',
             {
                 tabWidth: 4,
+                singleQuote: true,
             },
         ],
     },

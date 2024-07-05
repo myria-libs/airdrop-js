@@ -1,6 +1,6 @@
 // TODO: Add config class to serve customize configuration
 
-// Apply Design patterns: 
+// Apply Design patterns:
 // Creational Design Patterns
 // Singleton to ensure that a class has just a single instance: https://refactoring.guru/design-patterns/singleton
 // Builder to construct complex objects step by step: https://refactoring.guru/design-patterns/builder
