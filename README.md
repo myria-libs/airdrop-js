@@ -65,7 +65,8 @@ npm test | yarn test
     4. [SOLID Principles](https://javascript.plainenglish.io/solid-principles-with-type-script-d0f9a0589ec5) make clean code
     5. [DRY & KISS](https://dzone.com/articles/software-design-principles-dry-and-kiss) avoid redundancy and make your code as simple as possible
 4. Make buildable commit and pull latest code from `main` branch frequently
-5. Use readable commit message [karma](http://karma-runner.github.io/6.3/dev/git-commit-msg.html)
+5. Follow the [Semantic Versioning](https://semver.org/) once we are ready for release
+6. Use readable commit message [karma](http://karma-runner.github.io/6.3/dev/git-commit-msg.html)
 
 ```bash
      /‾‾‾‾‾‾‾‾
