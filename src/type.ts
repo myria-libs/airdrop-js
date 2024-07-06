@@ -87,7 +87,7 @@ export type RetryOptions = {
  */
 export type Prettify<T> = {
     [K in keyof T]: T[K];
-} & {};
+};
 
 /**
  * Configured options when creating a thirdweb chain either specify a SupportingChain or Chain

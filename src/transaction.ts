@@ -28,18 +28,19 @@ import {
     generateMerkleTreeInfoERC20,
     isClaimed,
 } from 'thirdweb/extensions/airdrop';
-import { TransactionReceipt } from 'thirdweb/transaction';
 import { approve } from 'thirdweb/extensions/erc20';
+import { TransactionReceipt } from 'thirdweb/transaction';
 import { Account } from 'thirdweb/wallets';
 
 // Internal import below this line
+import { ethereum, sepolia } from 'thirdweb/chains';
 import {
-    DEFAULT_MAX_BLOCKS_WAIT_TIME,
     DEFAULT_EXTRA_GAS_PERCENTAGE,
-    DEFAULT_EXTRA_PRIORITY_TIP_PERCENTAGE,
-    DEFAULT_CHAIN,
     DEFAULT_EXTRA_ON_RETRY_PERCENTAGE,
+    DEFAULT_EXTRA_PRIORITY_TIP_PERCENTAGE,
+    DEFAULT_MAX_BLOCKS_WAIT_TIME,
 } from './constant';
+import { retry } from './retry';
 import {
     Address,
     CreateRpcClientOptions,
@@ -50,8 +51,6 @@ import {
     SupportingChain,
     WhiteListItem,
 } from './type';
-import { retry } from './retry';
-import { ethereum, sepolia } from 'thirdweb/chains';
 
 // Internal Functions
 /**
