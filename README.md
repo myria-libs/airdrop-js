@@ -12,8 +12,8 @@
 
 The following tools need to be installed:
 
--   [Git](http://git-scm.com/)
--   [Node.js 18+](http://nodejs.org/)
+1. [Git](http://git-scm.com/)
+2. [Node.js 18+](http://nodejs.org/)
 
 ## Capabilities and Frameworks
 
@@ -82,5 +82,5 @@ npm test | yarn test
     │      │
     │      └─> Scope (optional): eg. Articles, Profile, Core
     │
-    └─> Type: chore, docs, feat, fix, refactor, style, ci, perf, build, or test.
+    └─> Type: chore, docs, feat, fix, refactor, style, ci, perf, build, test, or bump(Version).
 ```
