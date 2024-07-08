@@ -105,3 +105,12 @@ export type CreateRpcClientOptions = Prettify<
           chain: Chain;
       }
 >;
+
+export interface ConfigOptions {
+    tokenAddress: string;
+    airdropAddress: string;
+    selectedChain: string;
+    extraGasParams: string;
+    thirdwebClientId: string;
+    debug: boolean;
+}

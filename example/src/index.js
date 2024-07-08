@@ -1,5 +1,12 @@
 import * as AirDrop from '@myria/airdrop-js';
-
+const config = new AirDrop.Config({
+    tokenAddress: '0x1cccf7FD91fc2fd984dcB4C38B4bE877a724f748',
+    airdropAddress: '0x74E7AB220fc74A2A6a3B8Aa98Bb4Bb710d28d065',
+    selectedChain: '2',
+    extraGasParams: '3',
+    thirdwebClientId: '',
+    debug: true,
+});
 function getThirdwebContract(apiSecretKey, tokenAddress, airdropAddress) {
     const { SupportingChain } = AirDrop.Type;
     const { getThirdwebContract } = AirDrop.Transaction;
@@ -73,7 +80,9 @@ const AIRDROP_CONTRACT_ADDRESS = '0x74E7AB220fc74A2A6a3B8Aa98Bb4Bb710d28d065';
 // Execute functions for testing
 const { airdropContract } = getThirdwebContract(
     THIRD_WEB_CLIENT_SECRETE,
-    TOKEN_CONTRACT_ADDRESS,
-    AIRDROP_CONTRACT_ADDRESS,
+    // TOKEN_CONTRACT_ADDRESS,
+    // AIRDROP_CONTRACT_ADDRESS,
+    config.tokenAddress,
+    config.airdropContract,
 );
 generateMerkleRoot(SNAPSHOT_WHITELIST, airdropContract, TOKEN_CONTRACT_ADDRESS);
