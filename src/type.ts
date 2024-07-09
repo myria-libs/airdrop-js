@@ -110,7 +110,7 @@ export interface ConfigOptions {
     tokenAddress: string;
     airdropAddress: string;
     selectedChain: SupportingChain;
-    extraGasOptions: string;
+    extraGasOptions: ExtraGasOptions;
     thirdwebClientId: string;
     thirdwebClientSecret: string;
     debug: boolean;

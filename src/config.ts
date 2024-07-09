@@ -1,22 +1,22 @@
-import { ConfigOptions, SupportingChain } from './type';
+import { ConfigOptions, ExtraGasOptions, SupportingChain } from './type';
 export class Config {
     private static instance: Config;
-    private tokenAddress: string;
-    private airdropAddress: string;
-    private selectedChain: SupportingChain;
-    private extraGasOptions: string;
-    private thirdwebClientId: string;
-    private thirdwebClientSecret: string;
-    private debug: boolean;
+    private tokenAddress: string | undefined;
+    private airdropAddress: string | undefined;
+    private selectedChain: SupportingChain | undefined;
+    private extraGasOptions: ExtraGasOptions | undefined;
+    private thirdwebClientId: string | undefined;
+    private thirdwebClientSecret: string | undefined;
+    private debug: boolean | undefined;
 
-    constructor(options: ConfigOptions) {
-        this.tokenAddress = options.tokenAddress;
-        this.airdropAddress = options.airdropAddress;
-        this.selectedChain = options.selectedChain;
-        this.extraGasOptions = options.extraGasOptions;
-        this.thirdwebClientId = options.thirdwebClientId;
-        this.thirdwebClientSecret = options.thirdwebClientSecret;
-        this.debug = options.debug;
+    constructor(options?: ConfigOptions) {
+        this.tokenAddress = options?.tokenAddress;
+        this.airdropAddress = options?.airdropAddress;
+        this.selectedChain = options?.selectedChain;
+        this.extraGasOptions = options?.extraGasOptions;
+        this.thirdwebClientId = options?.thirdwebClientId;
+        this.thirdwebClientSecret = options?.thirdwebClientSecret;
+        this.debug = options?.debug;
     }
 
     public static getInstance(configOptions?: ConfigOptions): Config {
@@ -55,30 +55,30 @@ export class Config {
         this.debug = debug;
         return this;
     }
-    getTokenAddress(): string {
+    getTokenAddress(): string | undefined {
         return this.tokenAddress;
     }
 
-    getAirdropAddress(): string {
+    getAirdropAddress(): string | undefined {
         return this.airdropAddress;
     }
 
-    getExtraGasOptions(): string {
+    getExtraGasOptions(): ExtraGasOptions | undefined {
         return this.extraGasOptions;
     }
 
-    getSelectedChain(): string {
+    getSelectedChain(): string | undefined {
         return this.selectedChain;
     }
 
-    getThirdwebClientId(): string {
+    getThirdwebClientId(): string | undefined {
         return this.thirdwebClientId;
     }
-    getThirdwebClientSecret(): string {
+    getThirdwebClientSecret(): string | undefined {
         return this.thirdwebClientSecret;
     }
 
-    getDebug(): boolean {
+    getDebug(): boolean | undefined {
         return this.debug;
     }
 }
