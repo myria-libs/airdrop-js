@@ -1,17 +1,4 @@
-// TODO: Add config class to serve customize configuration
-
 import { ConfigOptions } from './type';
-
-// Apply Design patterns:
-// Creational Design Patterns
-// Singleton to ensure that a class has just a single instance: https://refactoring.guru/design-patterns/singleton
-// Builder to construct complex objects step by step: https://refactoring.guru/design-patterns/builder
-// - tokenAddress: Token Smart contract address
-// - airdropAddress: Airdrop Smart contract address
-// - selectedChain: type of SupportingChain
-// - extraGasParams: type of ExtraGasParams
-// - thirdwebClientId: retrieve from generating a thirdweb api key
-
 export class Config {
     private static instance: Config;
     public tokenAddress: string;
@@ -21,7 +8,7 @@ export class Config {
     public thirdwebClientId: string;
     public debug: boolean;
 
-    private constructor(options: ConfigOptions) {
+    constructor(options: ConfigOptions) {
         this.tokenAddress = options.tokenAddress;
         this.airdropAddress = options.airdropAddress;
         this.selectedChain = options.selectedChain;
@@ -35,5 +22,26 @@ export class Config {
             Config.instance = new Config(configOptions);
         }
         return Config.instance;
+    }
+
+    setTokenAddress(tokenAddress: string): Config {
+        this.tokenAddress = tokenAddress;
+        return this;
+    }
+    setAirdropAddress(airdropAddress: string): Config {
+        this.airdropAddress = airdropAddress;
+        return this;
+    }
+    setSelectedChain(selectedChain: string): Config {
+        this.selectedChain = selectedChain;
+        return this;
+    }
+    setThirdwebClientId(thirdwebClientId: string): Config {
+        this.thirdwebClientId = thirdwebClientId;
+        return this;
+    }
+    setDebug(debug: boolean): Config {
+        this.debug = debug;
+        return this;
     }
 }
