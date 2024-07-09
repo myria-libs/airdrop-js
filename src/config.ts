@@ -9,7 +9,7 @@ export class Config {
     private thirdwebClientSecret: string | undefined;
     private debug: boolean | undefined;
 
-    constructor(options?: ConfigOptions) {
+    private constructor(options?: ConfigOptions) {
         this.tokenAddress = options?.tokenAddress;
         this.airdropAddress = options?.airdropAddress;
         this.selectedChain = options?.selectedChain;
