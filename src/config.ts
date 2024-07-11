@@ -21,14 +21,12 @@ export class Config {
 
     public static getInstance(configOptions?: ConfigOptions): Config {
         if (!Config.instance) {
-            if (!configOptions) {
-                throw new Error('The configuration should not empty');
-            }
             Config.instance = new Config(configOptions);
         }
         return Config.instance;
     }
 
+    // Setters
     setTokenAddress(tokenAddress: string): Config {
         this.tokenAddress = tokenAddress;
         return this;
@@ -55,6 +53,13 @@ export class Config {
         this.debug = debug;
         return this;
     }
+
+    setExtraGasOptions(extraGasOptions: ExtraGasOptions): Config {
+        this.extraGasOptions = extraGasOptions;
+        return this;
+    }
+
+    // Getters
     getTokenAddress(): string | undefined {
         return this.tokenAddress;
     }

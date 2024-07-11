@@ -1,14 +1,11 @@
 import * as AirDrop from '@myria/airdrop-js';
-const config = AirDrop.Config.getInstance({
-    tokenAddress: '0x1cccf7FD91fc2fd984dcB4C38B4bE877a724f748',
-    airdropAddress: '0x74E7AB220fc74A2A6a3B8Aa98Bb4Bb710d28d065',
-    selectedChain: '2',
-    extraGasParams: '3',
-    thirdwebClientId: '',
-    debug: true,
-});
-function getThirdwebContract(apiSecretKey, tokenAddress, airdropAddress) {
-    const { SupportingChain } = AirDrop.Type;
+
+function getThirdwebContract(
+    apiSecretKey,
+    tokenAddress,
+    airdropAddress,
+    selectedChain,
+) {
     const { getThirdwebContract } = AirDrop.Transaction;
     const { createThirdwebClientWithSecretKey } = AirDrop.Client;
     console.log('[getThirdwebContract]: apiSecretKey = ' + apiSecretKey);
@@ -17,7 +14,7 @@ function getThirdwebContract(apiSecretKey, tokenAddress, airdropAddress) {
     const tokenContract = getThirdwebContract(
         tokenAddress,
         client,
-        SupportingChain.SEPOLIA,
+        selectedChain,
     );
     console.log(
         '[getThirdwebContract]: tokenContract = ' +
@@ -27,7 +24,7 @@ function getThirdwebContract(apiSecretKey, tokenAddress, airdropAddress) {
     const airdropContract = getThirdwebContract(
         airdropAddress,
         client,
-        SupportingChain.SEPOLIA,
+        selectedChain,
     );
     console.log(
         '[getThirdwebContract]: airdropContract = ' +
@@ -76,13 +73,19 @@ const THIRD_WEB_CLIENT_SECRETE =
 // Retrieve via: https://thirdweb.com/dashboard/contracts/deploy
 const TOKEN_CONTRACT_ADDRESS = '0x1cccf7FD91fc2fd984dcB4C38B4bE877a724f748';
 const AIRDROP_CONTRACT_ADDRESS = '0x74E7AB220fc74A2A6a3B8Aa98Bb4Bb710d28d065';
+// Group complex initialize config our variables to make it simpler
+const config = AirDrop.Config.getInstance()
+    .setTokenAddress(TOKEN_CONTRACT_ADDRESS)
+    .setAirdropAddress(AIRDROP_CONTRACT_ADDRESS)
+    .setThirdwebClientSecret(THIRD_WEB_CLIENT_SECRETE)
+    .setSelectedChain(AirDrop.Type.SupportingChain.SEPOLIA)
+    .setDebug(true);
 
 // Execute functions for testing
 const { airdropContract } = getThirdwebContract(
-    THIRD_WEB_CLIENT_SECRETE,
-    // TOKEN_CONTRACT_ADDRESS,
-    // AIRDROP_CONTRACT_ADDRESS,
-    config.tokenAddress,
-    config.airdropContract,
+    config.getThirdwebClientSecret(),
+    config.getTokenAddress(),
+    config.getAirdropAddress(),
+    config.getSelectedChain(),
 );
-generateMerkleRoot(SNAPSHOT_WHITELIST, airdropContract, TOKEN_CONTRACT_ADDRESS);
+generateMerkleRoot(SNAPSHOT_WHITELIST, airdropContract, config.tokenAddress);
