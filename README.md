@@ -82,5 +82,5 @@ npm test | yarn test
     │      │
     │      └─> Scope (optional): eg. Articles, Profile, Core
     │
-    └─> Type: chore, docs, feat, fix, refactor, style, ci, perf, build, test, or bump(Version).
+    └─> Type: chore, docs, feat, fix, refactor, style, ci, perf, build, or test.
 ```

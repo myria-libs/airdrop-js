@@ -1,6 +1,6 @@
 {
     "name": "@myria/airdrop-js",
-    "version": "0.0.2-alpha.1",
+    "version": "0.0.3-alpha",
     "description": "Airdrop in L1 with claim based approach",
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
