@@ -1,3 +1,5 @@
+// re-exports: forward export from thirdweb
+export { saveSnapshot, setMerkleRoot } from 'thirdweb/extensions/airdrop';
 /**
  * Collection of utils functions interact with on-chain to fulfill Airdrop claim-based approach
  */
@@ -30,7 +32,6 @@ import {
 } from 'thirdweb/extensions/airdrop';
 import { approve } from 'thirdweb/extensions/erc20';
 import { TransactionReceipt } from 'thirdweb/transaction';
-import { Account } from 'thirdweb/wallets';
 
 // Internal import below this line
 import { ethereum, sepolia } from 'thirdweb/chains';
@@ -51,6 +52,7 @@ import {
     SupportingChain,
     WhiteListItem,
 } from './type';
+import { Account } from './wallet';
 
 // Internal Functions
 /**
