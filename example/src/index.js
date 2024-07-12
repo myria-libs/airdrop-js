@@ -74,7 +74,14 @@ const THIRD_WEB_CLIENT_SECRETE =
 const TOKEN_CONTRACT_ADDRESS = '0x1cccf7FD91fc2fd984dcB4C38B4bE877a724f748';
 const AIRDROP_CONTRACT_ADDRESS = '0x74E7AB220fc74A2A6a3B8Aa98Bb4Bb710d28d065';
 // Group complex initialize config our variables to make it simpler
-const config = AirDrop.Config.getInstance()
+const config = AirDrop.Config.getInstance({
+    tokenAddress: '0x1cccf7FD91fc2fd984dcB4C38B4bE877a724f748',
+    airdropAddress: '0x74E7AB220fc74A2A6a3B8Aa98Bb4Bb710d28d065',
+    selectedChain: '2',
+    extraGasParams: '3',
+    thirdwebClientId: '',
+    debug: true,
+})
     .setTokenAddress(TOKEN_CONTRACT_ADDRESS)
     .setAirdropAddress(AIRDROP_CONTRACT_ADDRESS)
     .setThirdwebClientSecret(THIRD_WEB_CLIENT_SECRETE)
