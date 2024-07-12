@@ -1,3 +1,4 @@
+import './bigint.extensions';
 export * as Client from './client';
 export * from './config';
 export * as Constant from './constant';
