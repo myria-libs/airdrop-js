@@ -1,12 +1,14 @@
-# npm-template-typescript
+# airdrop-js
 
-[![Build Status](https://github.com/myria-libs/airdrop-js/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/myria-libs/airdrop-js/actions/workflows/ci.yml?query=branch%3Amain)
-[![Release Status](https://github.com/myria-libs/airdrop-js/actions/workflows/publish.yml/badge.svg)](https://github.com/myria-libs/airdrop-js/actions/workflows/publish.yml)
-[![NPM Version](https://badgen.net/npm/v/@myria-libs/airdrop-js)](https://npmjs.org/package/@myria-libs/airdrop-js)
-[![NPM Install Size](https://badgen.net/packagephobia/install/@myria-libs/airdrop-js)](https://packagephobia.com/result?p=@make-everything-simple%2Fnpm-template-typescript)
-[![NPM Downloads](https://badgen.net/npm/dm/@myria-libs/airdrop-js)](https://npmcharts.com/compare/@myria-libs/airdrop-js?minimal=true)
+<!-- [![Build Status](https://github.com/myria-libs/airdrop-js/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/myria-libs/airdrop-js/actions/workflows/ci.yml?query=branch%3Amain)
+[![Release Status](https://github.com/myria-libs/airdrop-js/actions/workflows/publish.yml/badge.svg)](https://github.com/myria-libs/airdrop-js/actions/workflows/publish.yml) -->
 
-`airdrop-js` supports transfer ERC20 tokens to a list of recipient addresses in L1 with claim based approach known as L1-Claim
+[![NPM Version](https://badgen.net/npm/v/@myria/airdrop-js)](https://npmjs.org/package/@myria/airdrop-js)
+[![NPM Downloads](https://badgen.net/npm/dm/@myria/airdrop-js)](https://npmcharts.com/compare/@myria/airdrop-js?minimal=true)
+
+<!-- [![NPM Install Size](https://badgen.net/packagephobia/install/@myria/airdrop-js)](https://packagephobia.com/result?p=@myria%2Fairdrop-js) -->
+
+Supports transfer of ERC20 tokens to a list of recipient addresses in L1 with claim-based approach known as L1-Claim. Recipient who triggers claiming pays the gas fee
 
 ## Prerequisites
 
