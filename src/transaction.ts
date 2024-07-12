@@ -29,6 +29,8 @@ import {
     claimERC20,
     generateMerkleTreeInfoERC20,
     isClaimed,
+    saveSnapshot,
+    setMerkleRoot,
 } from 'thirdweb/extensions/airdrop';
 import { approve } from 'thirdweb/extensions/erc20';
 import { TransactionReceipt } from 'thirdweb/transaction';
@@ -49,6 +51,7 @@ import {
     GasFeeInfo,
     GenerateMerkleTreeInfo,
     RetryOptions,
+    SaveMerkleTreeResult,
     SupportingChain,
     WhiteListItem,
 } from './type';
@@ -513,4 +516,61 @@ export async function retryPrepareAndSubmitRawTransaction(
             account: account,
         });
     }, retryOptions);
+}
+
+/**
+ * Airdrop's owner saved Merkle Tree as an approvement whitelist wallet for Airdrop.
+ *
+ * @param {Account} account - The Account represent as sender. See more detail {@link https://ethereum.org/en/glossary/#account|Account's Ethereum}.
+ * @param {string} merkleRoot - The generated merkleRoot from whitelist @see {@link generateMerkleTreeInfoERC20ForWhitelist}
+ * @param {string} snapshotUri - The generated snapshotUri from whitelist @see {@link generateMerkleTreeInfoERC20ForWhitelist}
+ * @param {ThirdwebContract} airdropContract - The airdrop Thirdweb contract.
+ * @param {Address} tokenAddress - The token address to claim.
+ * @param {RetryOptions} retryOptions - The configuration on retry
+ * @param {ExtraGasOptions} extraGasOptions - The extra gas options bidding for your transaction to be included in the next block.
+ * @returns {Promise<SaveMerkleTreeResult>} A promise that resolves to the confirmed transaction hashes accordingly.
+ * @throws An error if the wallet is not connected.
+ */
+export async function saveMerkleTreeByOwner(
+    account: Account,
+    merkleRoot: string,
+    snapshotUri: string,
+    airdropContract: ThirdwebContract,
+    tokenAddress: string,
+    retryOptions: RetryOptions = {},
+    extraGasOptions: ExtraGasOptions = {},
+): Promise<SaveMerkleTreeResult> {
+    // Save snapshot
+    const saveSnapshotTransaction = saveSnapshot({
+        contract: airdropContract,
+        merkleRoot,
+        snapshotUri,
+    });
+    const { transactionHash: snapshotTransactionHash } =
+        await retryPrepareAndSubmitRawTransaction(
+            saveSnapshotTransaction,
+            account,
+            retryOptions,
+            extraGasOptions,
+        );
+
+    // Set MerkleRoot
+    const merkleRootTransaction = setMerkleRoot({
+        contract: airdropContract,
+        token: `0x${tokenAddress.replace('0x', '')}`,
+        tokenMerkleRoot: `0x${merkleRoot.replace('0x', '')}`,
+        resetClaimStatus: true,
+    });
+    const { transactionHash: merkleRootTransactionHash } =
+        await retryPrepareAndSubmitRawTransaction(
+            merkleRootTransaction,
+            account,
+            retryOptions,
+            extraGasOptions,
+        );
+
+    return {
+        snapshotTransactionHash,
+        merkleRootTransactionHash,
+    };
 }
