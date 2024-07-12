@@ -1,14 +1,16 @@
 {
-  "extends": "@tsconfig/node18/tsconfig.json",
-  "compilerOptions": {
-    "preserveConstEnums": true,
-    "lib": ["DOM", "ESNext"],
-    "baseUrl": "./",
-    "rootDir": "./src",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "outDir": "./dist" /* Specify an output folder for all emitted files. */,
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts", "**/*.test.ts"],
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+        "lib": ["es2021"],
+        "module": "node16",
+        "target": "es2021",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "moduleResolution": "node16",
+        "rootDir": "./src",
+        "outDir": "./dist",
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "**/*.spec.ts", "**/*.test.ts"],
 }
