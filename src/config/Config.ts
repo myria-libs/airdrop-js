@@ -1,4 +1,4 @@
-import { ConfigOptions, ExtraGasOptions, SupportingChain } from './type';
+import { ConfigOptions, ExtraGasOptions, SupportingChain } from '../type';
 export class Config {
     private static instance: Config;
     private tokenAddress: string | undefined;

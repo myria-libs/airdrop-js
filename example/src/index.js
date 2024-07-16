@@ -1,4 +1,4 @@
-import * as AirDrop from '@myria/airdrop-js';
+import { Client, Config, Transaction, Type } from '@myria/airdrop-js';
 
 function getThirdwebContract(
     apiSecretKey,
@@ -6,8 +6,8 @@ function getThirdwebContract(
     airdropAddress,
     selectedChain,
 ) {
-    const { getThirdwebContract } = AirDrop.Transaction;
-    const { createThirdwebClientWithSecretKey } = AirDrop.Client;
+    const { getThirdwebContract } = Transaction;
+    const { createThirdwebClientWithSecretKey } = Client;
     console.log('[getThirdwebContract]: apiSecretKey = ' + apiSecretKey);
     const client = createThirdwebClientWithSecretKey(apiSecretKey);
     // 1. Get token contract use to airdrop
@@ -42,7 +42,7 @@ async function generateMerkleRoot(
     airdropContract,
     tokenAddress,
 ) {
-    const { generateMerkleTreeInfoERC20ForWhitelist } = AirDrop.Transaction;
+    const { generateMerkleTreeInfoERC20ForWhitelist } = Transaction;
     const { merkleRoot, snapshotUri } =
         await generateMerkleTreeInfoERC20ForWhitelist(
             snapshotWhitelist,
@@ -60,7 +60,7 @@ async function generateMerkleRoot(
 const SNAPSHOT_WHITELIST = [
     {
         recipient: '0x9E468DC850CC2B91a2C6e7eb5418088C7242b894',
-        amount: 1,
+        amount: 3,
     },
     {
         recipient: '0xeF9Dc3DCE1673A725774342851a3C9fC12EDA694',
@@ -74,11 +74,11 @@ const THIRD_WEB_CLIENT_SECRETE =
 const TOKEN_CONTRACT_ADDRESS = '0x1cccf7FD91fc2fd984dcB4C38B4bE877a724f748';
 const AIRDROP_CONTRACT_ADDRESS = '0x74E7AB220fc74A2A6a3B8Aa98Bb4Bb710d28d065';
 // Group complex initialize config our variables to make it simpler
-const config = AirDrop.Config.getInstance()
+const config = Config.getInstance({})
     .setTokenAddress(TOKEN_CONTRACT_ADDRESS)
     .setAirdropAddress(AIRDROP_CONTRACT_ADDRESS)
     .setThirdwebClientSecret(THIRD_WEB_CLIENT_SECRETE)
-    .setSelectedChain(AirDrop.Type.SupportingChain.SEPOLIA)
+    .setSelectedChain(Type.SupportingChain.SEPOLIA)
     .setDebug(true);
 
 // Execute functions for testing

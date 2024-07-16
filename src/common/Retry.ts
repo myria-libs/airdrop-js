@@ -1,4 +1,5 @@
-import { RetryOptions } from './type';
+import { RetryOptions } from '../type';
+
 /**
  * Attempts to execute a function that returns a promise and retries if the function throws an error.
  *

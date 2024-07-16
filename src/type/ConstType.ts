@@ -1,4 +1,3 @@
-// re-exports: forward export from thirdweb/wallets
 export { ZERO_ADDRESS } from 'thirdweb';
 
 // Gas fee

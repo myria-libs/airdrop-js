@@ -1,5 +1,9 @@
 import { Chain } from 'thirdweb';
-
+export type {
+    Account,
+    GetWalletBalanceOptions,
+    Wallet,
+} from 'thirdweb/wallets';
 export type Address = string;
 
 /**
