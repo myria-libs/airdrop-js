@@ -37,14 +37,9 @@ import { TransactionReceipt } from 'thirdweb/transaction';
 
 // Internal import below this line
 import { ethereum, sepolia } from 'thirdweb/chains';
+import { retry } from '../common/Retry';
 import {
-    DEFAULT_EXTRA_GAS_PERCENTAGE,
-    DEFAULT_EXTRA_ON_RETRY_PERCENTAGE,
-    DEFAULT_EXTRA_PRIORITY_TIP_PERCENTAGE,
-    DEFAULT_MAX_BLOCKS_WAIT_TIME,
-} from './constant';
-import { retry } from './retry';
-import {
+    Account,
     Address,
     CreateRpcClientOptions,
     ExtraGasOptions,
@@ -54,8 +49,13 @@ import {
     SaveMerkleTreeResult,
     SupportingChain,
     WhiteListItem,
-} from './type';
-import { Account } from './wallet';
+} from '../type';
+import {
+    DEFAULT_EXTRA_GAS_PERCENTAGE,
+    DEFAULT_EXTRA_ON_RETRY_PERCENTAGE,
+    DEFAULT_EXTRA_PRIORITY_TIP_PERCENTAGE,
+    DEFAULT_MAX_BLOCKS_WAIT_TIME,
+} from '../type/ConstType';
 
 // Internal Functions
 /**

@@ -1,0 +1,41 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    "editor.tabSize": 4,
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/dist": true,
+        "**/coverge": true
+    },
+    "typescript.referencesCodeLens.enabled": true,
+    "appService.zipIgnorePattern": [".vscode{,/**}"],
+    "appService.deploySubpath": "",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit",
+        "yaml.schemaStore.enable": "never"
+    },
+    // "javascript.preferences.importModuleSpecifier": "relative",
+    "yaml.schemaStore.enable": false,
+    "jest.runAllTestsFirst": false,
+    "jest.autoEnable": false,
+    "jest.showCoverageOnLoad": false,
+    "editor.wordWrap": "on",
+    "cSpell.words": [
+        "dtos",
+        "flushall",
+        "internalid",
+        "Mintable",
+        "MYRIA",
+        "nestjs"
+    ],
+    "[json]": {
+        "editor.formatOnSave": false
+    },
+    "[yml]": {
+        "editor.formatOnSave": false
+    },
+    "[yaml]": {
+        "editor.formatOnSave": false
+    },
+    "typescript.tsdk": "node_modules/typescript/lib"
+}
