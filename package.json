@@ -6,8 +6,8 @@
     "types": "dist/index.d.ts",
     "scripts": {
         "compile": "tsc -b ./configs/tsconfig.cjs.json ./configs/tsconfig.esm.json ./configs/tsconfig.types.json",
-        "build:clean": "rm -rf ./dist",
-        "build": "npm run build:clean && tsc",
+        "prebuild": "rm -rf ./dist",
+        "build": "tsc",
         "pretest": "rimraf coverage",
         "test": "jest --config ./configs/jest.config.ts",
         "lint": "eslint \"{src,tests}/**/*.ts\" --config ./configs/.eslintrc.cjs",
@@ -41,7 +41,6 @@
     },
     "homepage": "https://github.com/myria-libs/airdrop-js#readme",
     "devDependencies": {
-        "@tsconfig/node18": "^18.2.2",
         "@types/jest": "^29.5.11",
         "@types/node": "^20.14.10",
         "@typescript-eslint/eslint-plugin": "^6.20.0",
@@ -69,7 +68,6 @@
     },
     "dependencies": {
         "jest": "^29.7.0",
-        "thirdweb": "^5.34.3",
-        "tsup": "^8.1.0"
+        "thirdweb": "^5.34.3"
     }
 }
