@@ -81,6 +81,61 @@ async function approveAirdropClaimableContract(
     console.log('Transaction hash ' + transactionHash);
 }
 
+async function generateAndApproveWhitelistAirdropE2E(
+    snapshotWhitelist,
+    airdropContract,
+    tokenAddress,
+    selectedChain,
+) {
+    const { generateMerkleTreeInfoERC20ForWhitelist } = Transaction;
+    // 1. Generate Merkle tree
+    const { merkleRoot, snapshotUri } =
+        await generateMerkleTreeInfoERC20ForWhitelist(
+            snapshotWhitelist,
+            airdropContract,
+            tokenAddress,
+        );
+
+    console.log('1. merkleRoot: ' + merkleRoot);
+    console.log('1. snapshotUri: ' + snapshotUri);
+
+    // 2. Save Merkle tree on chain
+    const client = createThirdwebClientWithSecretKey(apiSecretKey);
+
+    const ownerContractAccount = privateKeyToAccount({
+        client,
+        privateKey: ETH_PRIVATE_KEY,
+    });
+
+    const { snapshotTransactionHash, merkleRootTransactionHash } =
+        await saveMerkleTreeByOwner(
+            ownerContractAccount,
+            merkleRoot,
+            snapshotUri,
+            airdropContract,
+            tokenAddress,
+        );
+
+    console.log('2. snapshotTransactionHash: ' + snapshotTransactionHash);
+    console.log('2. merkleRootTransactionHash: ' + merkleRootTransactionHash);
+
+    // 3. Approve spending contract
+    const tokenContract = getThirdwebContract(
+        tokenAddress,
+        client,
+        selectedChain,
+    );
+
+    const { transactionHash } = await approveAirdropAsSpender(
+        airdropContract.address,
+        totalAmount,
+        ownerContractAccount,
+        tokenContract,
+    );
+
+    console.log('3. Transaction hash ' + transactionHash);
+}
+
 /**
  * Configure variables. Replace with your credentials to test
  */
@@ -88,7 +143,7 @@ async function approveAirdropClaimableContract(
 const SNAPSHOT_WHITELIST = [
     {
         recipient: '0x9E468DC850CC2B91a2C6e7eb5418088C7242b894',
-        amount: 1,
+        amount: 3,
     },
     {
         recipient: '0xeF9Dc3DCE1673A725774342851a3C9fC12EDA694',
@@ -126,4 +181,10 @@ approveAirdropClaimableContract(
     config.getThirdwebClientSecret(),
     config.getAirdropAddress(),
     TOTAL_TOKEN_CLAIMABLE_AMOUNT,
+);
+generateAndApproveWhitelistAirdropE2E(
+    SNAPSHOT_WHITELIST,
+    airdropContract,
+    config.getTokenAddress(),
+    config.getSelectedChain(),
 );
