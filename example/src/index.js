@@ -53,20 +53,53 @@ async function generateMerkleRoot(
     console.log('snapshotUri: ' + snapshotUri);
 }
 
+async function approveAirdropClaimableContract(
+    apiSecretKey,
+    airdropAddress,
+    totalAmount,
+) {
+    const client = createThirdwebClientWithSecretKey(apiSecretKey);
+
+    const ownerContractAccount = privateKeyToAccount({
+        client,
+        privateKey: ETH_PRIVATE_KEY,
+    });
+
+    const tokenContract = getThirdwebContract(
+        tokenAddress,
+        client,
+        selectedChain,
+    );
+
+    const { transactionHash } = await approveAirdropAsSpender(
+        airdropAddress,
+        totalAmount,
+        ownerContractAccount,
+        tokenContract,
+    );
+
+    console.log('Transaction hash ' + transactionHash);
+}
+
 /**
  * Configure variables. Replace with your credentials to test
  */
-// Configure whitelist wallets available for claim with limit amount
+// Configure whitelist wallets available for claim with limit amount\
 const SNAPSHOT_WHITELIST = [
     {
         recipient: '0x9E468DC850CC2B91a2C6e7eb5418088C7242b894',
-        amount: 3,
+        amount: 1,
     },
     {
         recipient: '0xeF9Dc3DCE1673A725774342851a3C9fC12EDA694',
         amount: 1,
     },
 ];
+
+const TOTAL_TOKEN_CLAIMABLE_AMOUNT = SNAPSHOT_WHITELIST.reduce(
+    (accumulator, currentValue) => accumulator + currentValue.amount,
+    0,
+);
 // Retrieve via: https://thirdweb.com/dashboard/settings/api-keys
 const THIRD_WEB_CLIENT_SECRETE =
     'tGzGcXEEIW9ooVydHd79JUfStwJ8BMnoyGKcD5tpV1g1Kn-ypAcOX4ulbn-dV4F7QZXttffAEZabanAHjJp83g';
@@ -89,3 +122,8 @@ const { airdropContract } = getThirdwebContract(
     config.getSelectedChain(),
 );
 generateMerkleRoot(SNAPSHOT_WHITELIST, airdropContract, config.tokenAddress);
+approveAirdropClaimableContract(
+    config.getThirdwebClientSecret(),
+    config.getAirdropAddress(),
+    TOTAL_TOKEN_CLAIMABLE_AMOUNT,
+);
