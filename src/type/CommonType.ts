@@ -114,12 +114,23 @@ export type CreateRpcClientOptions = Prettify<
  * SaveMerkleTreeResult when submitting on-chain saveMerkleTree transaction.
  * @typedef {Object} SaveMerkleTreeResult
  * @property {string} snapshotTransactionHash - The generated transaction hash when submitting on-chain saveSnapshot.
- * @property {number} merkleRootTransactionHash - The generated transaction hash when submitting on-chain setMerkleRoot.
+ * @property {string} merkleRootTransactionHash - The generated transaction hash when submitting on-chain setMerkleRoot.
  */
 export type SaveMerkleTreeResult = {
     snapshotTransactionHash: string;
     merkleRootTransactionHash: string;
 };
+
+/**
+ * ApproveWhitelistAndAllowanceResult when submitting on-chain saveMerkleTree and allowance transaction.
+ * @typedef {Object} ApproveWhitelistAndAllowanceResult
+ * @property {string} snapshotTransactionHash - The generated transaction hash when submitting on-chain saveSnapshot.
+ * @property {string} merkleRootTransactionHash - The generated transaction hash when submitting on-chain setMerkleRoot.
+ * @property {string} approveTransactionHash - The generated transaction hash when submitting on-chain setMerkleRoot.
+ */
+export type ApproveWhitelistAndAllowanceResult = {
+    approveTransactionHash: string;
+} & SaveMerkleTreeResult;
 
 /**
  * Centralize configuration required variables for our sdk

@@ -1,6 +1,5 @@
 // re-exports: forward export from thirdweb
 export { saveSnapshot, setMerkleRoot } from 'thirdweb/extensions/airdrop';
-export { privateKeyToAccount } from 'thirdweb/wallets';
 /**
  * Collection of utils functions interact with on-chain to fulfill Airdrop claim-based approach
  */
@@ -42,6 +41,7 @@ import { retry } from '../common/Retry';
 import {
     Account,
     Address,
+    ApproveWhitelistAndAllowanceResult,
     CreateRpcClientOptions,
     ExtraGasOptions,
     GasFeeInfo,
@@ -363,6 +363,7 @@ export const claimAirdropToken = async (
  * @param {transactionCallback} callback - The callback that handles the post-submit state.
  * @param {boolean} isLogResult - Whether to log the result or not. Default true.
  * @returns {Promise<TransactionReceipt>} A promise that resolves to the confirmed transaction receipt.
+ * @throws An error if the amount <= 0.
  * @throws An error if the wallet is not connected.
  * @transaction
  * @example
@@ -385,6 +386,9 @@ export const approveAirdropAsSpender = async (
     callback?: (result: TransactionReceipt) => void,
     isLogResult = true,
 ): Promise<TransactionReceipt> => {
+    if (amount <= 0) {
+        throw Error('total airdrop amount must be greater than 0');
+    }
     const transaction = approve({
         contract: tokenContract,
         spender,
@@ -577,69 +581,55 @@ export async function saveMerkleTreeByOwner(
 }
 
 /**
- * Airdrop's owner saved Merkle Tree as an approvement whitelist wallet for Airdrop.
+ * Owner approve the whitelist and allowance.
  *
  * @param {Account} account - The Account represent as sender. See more detail {@link https://ethereum.org/en/glossary/#account|Account's Ethereum}.
- * @param {WhiteListItem[]} whitelist - The list of items is available for airdrop.
- * @param {ThirdwebClient} client - Thirdweb client.
+ * @param {string} merkleRoot - The generated merkleRoot from whitelist @see {@link generateMerkleTreeInfoERC20ForWhitelist}
+ * @param {string} snapshotUri - The generated snapshotUri from whitelist @see {@link generateMerkleTreeInfoERC20ForWhitelist}
  * @param {ThirdwebContract} airdropContract - The airdrop Thirdweb contract.
- * @param {Address} tokenAddress - The token address to claim.
- * @param {SupportingChain} selectedChain - The selected chain to operate on.
+ * @param {ThirdwebContract} tokenContract - The token Thirdweb contract to airdrop
  * @param {RetryOptions} retryOptions - The configuration on retry
- * @param {ExtraGasOptions} [extraGasOptions = {}] - The extra gas options see {@link saveMerkleTreeByOwner} for details
- * @param {RetryOptions} [retryOptions = {}] - The configuration on retry see {@link saveMerkleTreeByOwner} for details
- * @param {number} totalAmount - Airdrop total amount of token, if not specify, sum of whitelist will be used as total
- * @returns {Promise<string>} A promise that resolves to the confirmed approval transaction hash.
+ * @param {ExtraGasOptions} extraGasOptions - The extra gas options bidding for your transaction to be included in the next block.
+ * @param {number} totalAmount - The total airdrop amount in ether format.
+ * @returns {Promise<ApproveWhitelistAndAllowanceResult>} A promise that resolves to the confirmed transaction hashes accordingly.
+ * @throws An error if the totalAmount <= 0.
  * @throws An error if the wallet is not connected.
  */
-export async function generateAndApproveWhitelistAirdrop(
-    whitelist: WhiteListItem[],
-    airdropContract: ThirdwebContract,
-    tokenAddress: Address,
-    client: ThirdwebClient,
+export async function approveWhitelistAndAllowance(
     account: Account,
-    selectedChain: SupportingChain,
+    merkleRoot: string,
+    snapshotUri: string,
+    airdropContract: ThirdwebContract,
+    tokenContract: ThirdwebContract,
     retryOptions: RetryOptions = {},
     extraGasOptions: ExtraGasOptions = {},
-    totalAmount?: number,
-): Promise<string> {
-    const { merkleRoot, snapshotUri } =
-        await generateMerkleTreeInfoERC20ForWhitelist(
-            whitelist,
-            airdropContract,
-            tokenAddress,
-            true,
-        );
-
-    const tokenContract = getThirdwebContract(
-        tokenAddress,
-        client,
-        selectedChain,
-    );
-
-    await saveMerkleTreeByOwner(
-        account,
-        merkleRoot,
-        snapshotUri,
-        airdropContract,
-        tokenAddress,
-        retryOptions,
-        extraGasOptions,
-    );
-
-    if (!totalAmount) {
-        totalAmount = whitelist.reduce(
-            (accumulator, currentValue) => accumulator + currentValue.amount,
-            0,
-        );
+    totalAmount: number,
+): Promise<ApproveWhitelistAndAllowanceResult> {
+    if (totalAmount <= 0) {
+        throw Error('totalAmount must be greater than 0');
     }
+    const { snapshotTransactionHash, merkleRootTransactionHash } =
+        await saveMerkleTreeByOwner(
+            account,
+            merkleRoot,
+            snapshotUri,
+            airdropContract,
+            tokenContract.address,
+            retryOptions,
+            extraGasOptions,
+        );
 
-    const { transactionHash } = await approveAirdropAsSpender(
-        airdropContract.address,
-        totalAmount,
-        account,
-        tokenContract,
-    );
+    const { transactionHash: approveTransactionHash } =
+        await approveAirdropAsSpender(
+            airdropContract.address,
+            totalAmount,
+            account,
+            tokenContract,
+        );
 
-    return transactionHash;
+    return {
+        snapshotTransactionHash,
+        merkleRootTransactionHash,
+        approveTransactionHash,
+    };
 }
