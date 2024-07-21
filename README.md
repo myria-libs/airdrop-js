@@ -26,7 +26,7 @@ The following tools need to be installed:
 | Testing Framework    | [Jest](https://jestjs.io/) a delightful JavaScript Testing Framework with a focus on simplicity.                                                                                                                                                                                                                                                                                                                                          |
 | Useful Links         | [npmtrends](https://npmtrends.com/) Compare package download counts over time, [act](https://nektosact.com/introduction.html) run your GitHub Actions locally, [Actionlint](https://marketplace.visualstudio.com/items?itemName=arahata.linter-actionlint) static checker for GitHub Actions workflow files                                                                                                                               |
 
-## How to use
+## How to
 
 ### Clone and run build
 
@@ -54,6 +54,10 @@ npm run prettier:format | yarn prettier:format
 ```bash
 npm test | yarn test
 ```
+
+### Integration as a consumer
+
+Reference in the [example/src/index.js](https://github.com/myria-libs/airdrop-js/blob/main/example/src/index.js) to get more detail. Should be straightforward
 
 ## Collaboration
 

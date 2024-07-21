@@ -1,3 +1,8 @@
+/**
+ * Common module.
+ * @module Common
+ */
+
 import { RetryOptions } from '../type';
 
 /**

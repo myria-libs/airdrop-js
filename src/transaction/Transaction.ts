@@ -1,3 +1,8 @@
+/**
+ * Transaction module.
+ * @module Transaction
+ */
+
 // re-exports: forward export from thirdweb
 export { saveSnapshot, setMerkleRoot } from 'thirdweb/extensions/airdrop';
 /**
@@ -35,7 +40,7 @@ import {
 import { approve } from 'thirdweb/extensions/erc20';
 import { TransactionReceipt } from 'thirdweb/transaction';
 
-// Internal import below this line
+// Internal imports below this line
 import { ethereum, sepolia } from 'thirdweb/chains';
 import { retry } from '../common/Retry';
 import {
@@ -69,14 +74,13 @@ const getThirdWebChain = (supportingChain: SupportingChain): Chain => {
     switch (supportingChain) {
         case SupportingChain.ETHEREUM:
             return ethereum;
-            break;
         case SupportingChain.SEPOLIA:
             return sepolia;
     }
 };
 
 /**
- * Sends a transaction using the provided wallet.
+ * Private method Sends a transaction using the provided wallet.
  *
  * @param {SendTransactionOptions} options - The options for sending the transaction.
  * @param {boolean} isLogResult - Whether to log the result or not. Default true.
@@ -140,7 +144,6 @@ export const getRpcClientByChain = (
 
 /**
  * Calculate gas fee info need to paid to submit a transaction
- * @summary Retrieve Gas Fee Info
  * @see {@link https://ethereum.org/en/developers/docs/gas|Ethereum's gas} or @see {@link https://support.metamask.io/transactions-and-gas/gas-fees/user-guide-gas/|Metamask's gas}
  * @see {@link https://etherscan.io/gastracker|Gas Tracker}
  *
@@ -319,7 +322,6 @@ export const isRecipientClaimed = async (
  * @param {boolean} isLogResult - Whether to log the result or not. Default true.
  * @returns {Promise<TransactionReceipt>} A promise that resolves to the confirmed transaction receipt.
  * @throws An error if the wallet is not connected.
- * @transaction
  * @example
  * ```ts
  * import { claimAirdropToken } from "./index";
@@ -365,7 +367,6 @@ export const claimAirdropToken = async (
  * @returns {Promise<TransactionReceipt>} A promise that resolves to the confirmed transaction receipt.
  * @throws An error if the amount <= 0.
  * @throws An error if the wallet is not connected.
- * @transaction
  * @example
  * ```ts
  * import { approveAirdropAsSpender } from "./index";
@@ -411,7 +412,6 @@ export const approveAirdropAsSpender = async (
  * @param {boolean} isLogResult - Whether to log the result or not. Default true.
  * @returns {Promise<GenerateMerkleTreeInfo>} A promise that resolves to the generated info.
  * @throws An error if the wallet is zero.
- * @transaction
  * @example
  * ```ts
  * import { generateMerkleTreeForWhitelist } from "./index";
@@ -453,7 +453,6 @@ export const generateMerkleTreeInfoERC20ForWhitelist = async (
  * @param {number} maxBlocksWaitTime - The maximum of blocks to wait for confirmation before considering success.
  * @returns {Promise<TransactionReceipt>} A promise that resolves to the confirmed transaction receipt.
  * @throws An error if the wallet is not connected.
- * @transaction
  * @example
  * ```ts
  * import { sendAndConfirmTransaction } from "./index";
