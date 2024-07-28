@@ -35,7 +35,7 @@ export class Config {
     /**
      * Single entry point to let consumer initial or access the shared access with singleton pattern
      *
-     *  @param {ConfigOptions} options - optional config object to initialize once if you want
+     *  @param {ConfigOptions} configOptions - optional config object to initialize once if you want
      * @returns {Config} - Return the exiting or create a new one
      */
     public static getInstance(configOptions?: ConfigOptions): Config {

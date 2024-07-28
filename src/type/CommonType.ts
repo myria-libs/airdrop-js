@@ -19,13 +19,27 @@ export type Address = string;
  * @typedef {Object} ExtraGasOptions
  * @property {number} extraMaxPriorityFeePerGasPercentage - The percentage as extra amount add on top up maxPriorityFeePerGas.
  * @property {number} extraGasPercentage- The percentage as extra amount add on top up gas limit.
- * @property {number} extraOnRetryPercentage- The percentage add on top of extraMaxPriorityFeePerGasPercentage and extraGasPercentage when retry.
+ * @property {number} extraOnRetryPercentage- The percentage add on top of extraMaxPriorityFeePerGasPercentage and extraGasPercentage when retry. Multiply by retryCount
+ * @example
+ * ```ts
+ *
+ * const extraGas =
+ *  (gasLimit / BigInt(100)) *
+ *  BigInt(extraGasPercentage +
+ *      extraOnRetryPercentage * retryCount);
+ * const extraMaxPriorityFeePerGas =
+ *  (maxPriorityFeePerGas / BigInt(100)) *
+ *      BigInt(extraMaxPriorityFeePerGasPercentage +
+ *      extraOnRetryPercentage * retryCount);
+ * const maxFeePerGas =
+ *  gasPrice + maxPriorityFeePerGas + extraMaxPriorityFeePerGas;
+ * ```
  */
-export type ExtraGasOptions = {
+export interface ExtraGasOptions {
     extraMaxPriorityFeePerGasPercentage?: number;
     extraGasPercentage?: number;
     extraOnRetryPercentage?: number;
-};
+}
 
 /**
  * The GasFeeInfo need to configure to paid for a transaction.
@@ -36,13 +50,13 @@ export type ExtraGasOptions = {
  * @property {bigint | undefined} maxPriorityFeePerGas - The priority fee (tip) incentivizes validators to include a transaction in the block.
  * @property {bigint | undefined} extraGas - Indicates the extra gas you are willing to paid on top-up gas.
  */
-export type GasFeeInfo = {
+export interface GasFeeInfo {
     gas?: bigint | undefined;
     gasPrice?: bigint | undefined;
     maxFeePerGas?: bigint | undefined;
     maxPriorityFeePerGas?: bigint | undefined;
     extraGas?: bigint | undefined;
-};
+}
 
 /**
  * The eligible item is added to the whitelist for Airdrop.
@@ -50,10 +64,10 @@ export type GasFeeInfo = {
  * @property {Address} recipient - Indicates the ethereum wallet address.
  * @property {number} amount - Indicates the allocated amount in ether format for recipient.
  */
-export type WhiteListItem = {
+export interface WhiteListItem {
     recipient: Address;
     amount: number;
-};
+}
 
 /**
  * The generated merkle tree info.
@@ -61,10 +75,10 @@ export type WhiteListItem = {
  * @property {string} merkleRoot - Indicates the merkleRoot value in hex format.
  * @property {string} snapshotUri - Indicates snapshotUri value in ipfs format.
  */
-export type GenerateMerkleTreeInfo = {
+export interface GenerateMerkleTreeInfo {
     merkleRoot: string;
     snapshotUri: string;
-};
+}
 
 /**
  * Types of current supporting chain in this library either ETHEREUM or SEPOLIA
@@ -84,10 +98,10 @@ export enum SupportingChain {
  * @property {number} retries - The number of times to retry the function before failing.
  * @property {number} delay- The delay in milliseconds between retries.
  */
-export type RetryOptions = {
+export interface RetryOptions {
     retries?: number;
     delay?: number;
-};
+}
 
 /**
  * Combines members of an intersection into a readable type.
@@ -118,26 +132,51 @@ export type CreateRpcClientOptions = Prettify<
 >;
 
 /**
- * SaveMerkleTreeResult when submitting on-chain saveMerkleTree transaction.
- * @typedef {Object} SaveMerkleTreeResult
- * @property {string} snapshotTransactionHash - The generated transaction hash when submitting on-chain saveSnapshot.
- * @property {string} merkleRootTransactionHash - The generated transaction hash when submitting on-chain setMerkleRoot.
+ * Transaction Result wrapper to return predefined errors to let consumers handle them accordingly. Success with transaction hash or Failed with error code and message
+ *
+ * @typedef {Object} TransactionResultOptions
+ * @property {string} transactionHash - The generated transaction hash when submitting on-chain success.
+ * @property {number} errorCode - Predefine error code
+ * @property {string} errorMessage - Predefine error message
+ * @see {@link Type.ErrorCode | Predefined errors}
  */
-export type SaveMerkleTreeResult = {
-    snapshotTransactionHash: string;
-    merkleRootTransactionHash: string;
-};
+export type TransactionResultOptions = Prettify<
+    | {
+          transactionHash: string; // Success
+          errorCode?: never;
+          errorMessage?: never;
+      }
+    | {
+          transactionHash?: never; // Failed
+          errorCode: number;
+          errorMessage: string;
+      }
+>;
+
+/**
+ * SaveMerkleTreeResult when submitting on-chain saveMerkleTree transaction.
+ *
+ * @typedef {Object} SaveMerkleTreeResult
+ * @property {TransactionResultOptions} snapshotResult - The transaction result wrap with predefined errors.
+ * @property {TransactionResultOptions} merkleRootResult - The transaction result wrap with predefined errors.
+ */
+export interface SaveMerkleTreeResult {
+    snapshotResult: TransactionResultOptions;
+    merkleRootResult: TransactionResultOptions;
+}
 
 /**
  * ApproveWhitelistAndAllowanceResult when submitting on-chain saveMerkleTree and allowance transaction.
+ *
  * @typedef {Object} ApproveWhitelistAndAllowanceResult
- * @property {string} snapshotTransactionHash - The generated transaction hash when submitting on-chain saveSnapshot.
- * @property {string} merkleRootTransactionHash - The generated transaction hash when submitting on-chain setMerkleRoot.
- * @property {string} approveTransactionHash - The generated transaction hash when submitting on-chain setMerkleRoot.
+ * @property {TransactionResultOptions} snapshotResult - The transaction result wrap with predefined errors.
+ * @property {TransactionResultOptions} merkleRootResult - The transaction result wrap with predefined errors.
+ * @property {TransactionResultOptions} approveAllowanceResult - The transaction result wrap with predefined errors.
  */
-export type ApproveWhitelistAndAllowanceResult = {
-    approveTransactionHash: string;
-} & SaveMerkleTreeResult;
+export interface ApproveWhitelistAndAllowanceResult
+    extends SaveMerkleTreeResult {
+    approveAllowanceResult: TransactionResultOptions;
+}
 
 /**
  * Centralize configuration required variables for our sdk

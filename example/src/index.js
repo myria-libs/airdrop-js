@@ -88,6 +88,7 @@ async function approveWhitelistAndAllowanceByPartner(
     airdropAddress,
     totalAmount,
 ) {
+    // 1. Partner plugs in necessary configs (credentials)
     // partner retrieve the necessary variable
     const { airdropContract, tokenContract, client } = getThirdwebContract(
         Config.getInstance().getThirdwebClientSecret(),
@@ -101,31 +102,65 @@ async function approveWhitelistAndAllowanceByPartner(
         client,
         privateKey: ETH_PRIVATE_KEY,
     });
-    const { saveMerkleTreeByOwner, approveAirdropAsSpender } = Transaction;
+    // 2. Partner invokes `airdrop-js` to perform approve whitelist and allowance on-chain
+    const { approveWhitelistAndAllowance } = Transaction;
 
-    // Interact with Airdrop contract to ave MerkleTree on-chin
-    const { snapshotTransactionHash, merkleRootTransactionHash } =
-        await saveMerkleTreeByOwner(
+    // Invoke a wrapper function to simplify for our partner by executing all required on-chain transactions. Reference the implementation of approveWhitelistAndAllowance function to get more insight
+    const approveWhitelistAndAllowanceResult =
+        await approveWhitelistAndAllowance(
             ownerContractAccount,
             merkleRoot,
             snapshotUri,
             airdropContract,
-            tokenAddress,
+            tokenContract,
+            totalAmount,
+            {
+                retries: 3,
+                delay: 1000,
+            },
+            {
+                extraMaxPriorityFeePerGasPercentage:
+                    Type.DEFAULT_EXTRA_PRIORITY_TIP_PERCENTAGE,
+                extraGasPercentage: Type.DEFAULT_EXTRA_GAS_PERCENTAGE,
+                extraOnRetryPercentage: Type.DEFAULT_EXTRA_ON_RETRY_PERCENTAGE,
+            },
         );
 
-    // Interact with Token contract to approve allowance on-chain airdrop contract as spender
-    const { transactionHash: approveTransactionHash } =
-        await approveAirdropAsSpender(
-            airdropContract.address,
-            totalAmount,
-            ownerContractAccount,
-            tokenContract,
+    console.log(
+        '[approveWhitelistAndAllowanceByPartner] approveWhitelistAndAllowanceResult = ' +
+            JSON.stringify(approveWhitelistAndAllowanceResult),
+    );
+    const { snapshotResult, merkleRootResult, approveAllowanceResult } =
+        approveWhitelistAndAllowanceResult;
+    if (
+        snapshotResult.errorCode ==
+        Type.ErrorCode.ALREADY_SUBMITTED_SKIP_TRANSACTION.errorCode
+    ) {
+        console.log(
+            ' [approveWhitelistAndAllowanceByPartner]>[snapshotResult] Consider as success as previous submitting with transactionHash. Consumer SHOULD store it',
         );
+    }
+    if (
+        merkleRootResult.errorCode ==
+        Type.ErrorCode.ALREADY_SUBMITTED_SKIP_TRANSACTION.errorCode
+    ) {
+        console.log(
+            ' [approveWhitelistAndAllowanceByPartner]>[merkleRootResult] Consider as success as previous submitting with transactionHash. Consumer SHOULD store it',
+        );
+    }
+    if (
+        approveAllowanceResult.errorCode ==
+        Type.ErrorCode.ALREADY_SUBMITTED_SKIP_TRANSACTION.errorCode
+    ) {
+        console.log(
+            ' [approveWhitelistAndAllowanceByPartner]> [approveAllowanceResult] Consider as success as previous submitting with transactionHash. Consumer SHOULD store it',
+        );
+    }
 
     return {
-        snapshotTransactionHash,
-        merkleRootTransactionHash,
-        approveTransactionHash,
+        snapshotResult,
+        merkleRootResult,
+        approveAllowanceResult,
     };
 }
 
@@ -151,7 +186,7 @@ async function generateAndApproveWhitelistAirdropE2E(
     );
     console.log('Myria generate result' + JSON.stringify(generateResult));
 
-    // Partner receives request from Myria and then approve by invoking the following function
+    // 2. Partner receives request from Myria and then approve by invoking the following function
     const approveResult = await approveWhitelistAndAllowanceByPartner(
         generateResult.merkleRoot,
         generateResult.snapshotUri,
@@ -159,13 +194,29 @@ async function generateAndApproveWhitelistAirdropE2E(
         airdropAddress,
         totalAmount,
     );
-    console.log('partner approve result = ' + JSON.stringify(approveResult));
+    console.log(
+        '1️⃣[partner] first approve result = ' + JSON.stringify(approveResult),
+    );
+
+    // Simulate safe retry when partial success some steps need to retry. SHOULD not submit on-chain transactions again to reduce our cost
+    const duplicatedApproveResult = await approveWhitelistAndAllowanceByPartner(
+        generateResult.merkleRoot,
+        generateResult.snapshotUri,
+        tokenAddress,
+        airdropAddress,
+        totalAmount,
+    );
+    console.log(
+        '2️⃣[partner] retry approve result = ' +
+            JSON.stringify(duplicatedApproveResult),
+    );
 }
 
 /**
  * Configure variables. Replace with your credentials to test, please. Otherwise, They can be deprecated soon, please
  */
 // Configure whitelist wallets available for claim with limit amount
+// Replace with your wallets
 const SNAPSHOT_WHITELIST = [
     {
         recipient: '0x9E468DC850CC2B91a2C6e7eb5418088C7242b894',
@@ -176,14 +227,15 @@ const SNAPSHOT_WHITELIST = [
         amount: 3,
     },
 ];
-
 const TOTAL_TOKEN_CLAIMABLE_AMOUNT = SNAPSHOT_WHITELIST.reduce(
     (accumulator, currentValue) => accumulator + currentValue.amount,
     0,
 );
+// Replace with your api secret key. Default value might be deprecated soon
 // Retrieve via: https://thirdweb.com/dashboard/settings/api-keys
 const THIRD_WEB_CLIENT_SECRETE =
     'tGzGcXEEIW9ooVydHd79JUfStwJ8BMnoyGKcD5tpV1g1Kn-ypAcOX4ulbn-dV4F7QZXttffAEZabanAHjJp83g';
+// Replace with your deployed smart contract addresses
 // Retrieve via: https://thirdweb.com/dashboard/contracts/deploy
 const TOKEN_CONTRACT_ADDRESS = '0x1cccf7FD91fc2fd984dcB4C38B4bE877a724f748';
 const AIRDROP_CONTRACT_ADDRESS = '0x74E7AB220fc74A2A6a3B8Aa98Bb4Bb710d28d065';
