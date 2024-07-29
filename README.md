@@ -24,7 +24,7 @@ The following tools need to be installed:
 | Dependence Framework | [typescript](https://www.npmjs.com/package/typescript) adds optional types to JavaScript that support tools for large-scale JavaScript applications, [thirdweb-dev](https://github.com/thirdweb-dev/js) performant & lightweight SDK to interact with any EVM chain from Node, React and React Native                                                                                                                                     |
 | Coding Standard      | [eslint](https://eslint.org/) statically analyzes your code to quickly find and fix problems based on opt-in [rules](https://eslint.org/docs/latest/rules/), [prettier](https://prettier.io/docs/en/) an opinionated code formatter to build and enforce a style guide on save, [eslint-config-prettier](https://github.com/prettier/eslint-config-prettier) to turns off all rules that are unnecessary or might conflict with Prettier. |
 | Testing Framework    | [Jest](https://jestjs.io/) a delightful JavaScript Testing Framework with a focus on simplicity.                                                                                                                                                                                                                                                                                                                                          |
-| Useful Links         | [npmtrends](https://npmtrends.com/) Compare package download counts over time, [act](https://nektosact.com/introduction.html) run your GitHub Actions locally, [Actionlint](https://marketplace.visualstudio.com/items?itemName=arahata.linter-actionlint) static checker for GitHub Actions workflow files                                                                                                                               |
+| Useful Links         | [npmtrends](https://npmtrends.com/) Compare package download counts over time, [act](https://nektosact.com/introduction.html) run your GitHub Actions locally, [Actionlint](https://marketplace.visualstudio.com/items?itemName=arahata.linter-actionlint) static checker for GitHub Actions workflow files,[TypeDoc](https://typedoc.org/guides/overview/) is a documentation generator for TypeScript                                   |
 
 ## How to
 
@@ -57,7 +57,76 @@ npm test | yarn test
 
 ### Integration as a consumer
 
-Reference in the [example/src/index.js](https://github.com/myria-libs/airdrop-js/blob/main/example/src/index.js) to get more detail. Should be straightforward
+1. Generate merkleTree info from whitelist
+
+```typescript
+// Configure snapshot
+const SNAPSHOT_WHITELIST = [
+    {
+        recipient: '0x663217Fd41198bC5dB2F69313a324D0628daA9E8',
+        amount: 1,
+    },
+];
+const totalAmount = SNAPSHOT_WHITELIST.reduce(
+    (accumulator, currentValue) => accumulator + currentValue.amount,
+    0,
+);
+// Invoke airdrop-js to generate. Will be use as input for next step
+const { merkleRoot, snapshotUri } = await generateMerkleRootByMyria(
+    snapshotWhitelist,
+    airdropAddress,
+    tokenAddress,
+);
+```
+
+2. Approve whitelist and allowance
+
+```typescript
+import { Client, Config, Transaction, Type, Wallet } from '@myria/airdrop-js';
+
+// 1. Partner plugs in necessary configs (credentials)
+const config = Config.getInstance({})
+    .setTokenAddress($YOUR_TOKEN_CONTRACT_ADDRESS)
+    .setAirdropAddress($YOUR_AIRDROP_CONTRACT_ADDRESS)
+    .setThirdwebClientSecret($YOUR_THIRD_WEB_CLIENT_SECRETE)
+    .setSelectedChain(Type.SupportingChain.SEPOLIA)
+    .setDebug(true);
+// partner retrieve the necessary variable
+const { airdropContract, tokenContract, client } = getThirdwebContract(
+    Config.getInstance().getThirdwebClientSecret(),
+    config.getTokenAddress(),
+    config.getAirdropAddress(),
+    Config.getInstance().getSelectedChain(),
+);
+// partner inject ETH_PRIVATE_KEY from their system
+const { privateKeyToAccount } = Wallet;
+const ownerContractAccount = privateKeyToAccount({
+    client,
+    privateKey: ETH_PRIVATE_KEY,
+});
+// 2. Partner invokes `airdrop-js` to perform approve whitelist and allowance on-chain
+const { approveWhitelistAndAllowance } = Transaction;
+const approveWhitelistAndAllowanceResult = await approveWhitelistAndAllowance(
+    ownerContractAccount,
+    merkleRoot,
+    snapshotUri,
+    airdropContract,
+    tokenContract,
+    totalAmount,
+    {
+        retries: 3,
+        delay: 1000,
+    },
+    {
+        extraMaxPriorityFeePerGasPercentage:
+            Type.DEFAULT_EXTRA_PRIORITY_TIP_PERCENTAGE,
+        extraGasPercentage: Type.DEFAULT_EXTRA_GAS_PERCENTAGE,
+        extraOnRetryPercentage: Type.DEFAULT_EXTRA_ON_RETRY_PERCENTAGE,
+    },
+);
+```
+
+> Full E2E integration reference in the [example/src/index.js](https://github.com/myria-libs/airdrop-js/blob/main/example/src/index.js). Should be straightforward
 
 ## Collaboration
 
