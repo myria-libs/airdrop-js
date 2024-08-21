@@ -15,7 +15,8 @@
         "prettier:format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\" \"configs/**/*\" --config configs/.prettierrc",
         "prepare": "husky",
         "jsdoc": "jsdoc -c configs/jsdoc.json",
-        "typedoc": "typedoc --options configs/typedoc.json"
+        "typedoc": "typedoc --options configs/typedoc.json",
+        "typedoc:serve": "npm run typedoc && http-server ./docs --cors -p 8080 -c-1"
     },
     "include": [
         "src"
@@ -73,6 +74,7 @@
         "node": ">=18.0.0"
     },
     "dependencies": {
+        "http-server": "^14.1.1",
         "jest": "^29.7.0",
         "thirdweb": "^5.34.3"
     }
