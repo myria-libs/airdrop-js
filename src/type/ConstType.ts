@@ -18,3 +18,8 @@ export const DEFAULT_EXTRA_ON_RETRY_PERCENTAGE = 1;
  * Default maximum of blocks need to wait before considering a transaction in final status
  * */
 export const DEFAULT_MAX_BLOCKS_WAIT_TIME = 30;
+/**
+ * The error message return in case of user try to claim again
+ * */
+export const TRANSACTION_ERROR_AIRDROP_ALREADY_CLAIMED =
+    'AirdropAlreadyClaimed';
