@@ -20,6 +20,7 @@ import {
     approveAirdropAsSpender,
     /* eslint-disable @typescript-eslint/no-unused-vars */
     generateMerkleTreeInfoERC20ForWhitelist,
+    getOwnerOfContract,
     saveMerkleRootByOwner,
     saveSnapshotByOwner,
 } from './core';
@@ -137,6 +138,10 @@ export async function approveWhitelistAndAllowance(
 ): Promise<ApproveWhitelistAndAllowanceResult> {
     if (totalAmount <= 0) {
         throw Error('totalAmount must be greater than 0');
+    }
+    const ownerAddress = await getOwnerOfContract(airdropContract);
+    if (account.address.toLowerCase() !== ownerAddress.toLowerCase()) {
+        throw Error('account must belong to airdropContract owner');
     }
     const startTime = logFunctionTrackStartTime(
         approveWhitelistAndAllowance.name,
