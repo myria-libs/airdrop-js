@@ -5,13 +5,14 @@
     "main": "index.js",
     "scripts": {
         "test": "echo 'example testing a customized npm package on local'",
+        "dev": "cd ../ && npm run build && cd example && npm i && node src/index.js",
         "start": "npm i && node src/index.js",
         "claim:reward": "node src/claim-reward.js"
     },
     "author": "myria",
     "license": "MIT",
     "dependencies": {
-        "@myria/airdrop-js": "^0.0.6-alpha",
+        "@myria/airdrop-js": "file:..",
         "@myria/api-request": "^0.0.2-alpha",
         "@myria/crypto-js": "^0.1.2-alpha",
         "dotenv": "^16.4.5"

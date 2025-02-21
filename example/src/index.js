@@ -239,8 +239,8 @@ const THIRD_WEB_CLIENT_SECRETE =
 // Retrieve via: https://thirdweb.com/dashboard/contracts/deploy
 const TOKEN_CONTRACT_ADDRESS = '0x1cccf7FD91fc2fd984dcB4C38B4bE877a724f748';
 const AIRDROP_CONTRACT_ADDRESS = '0x74E7AB220fc74A2A6a3B8Aa98Bb4Bb710d28d065';
-// Inject your ETH private key when start
-// ETH_PRIVATE_KEY=... npm run start
+// Inject your ETH private key when start dev mode
+// ETH_PRIVATE_KEY=... npm run dev
 const ETH_PRIVATE_KEY =
     process.env.ETH_PRIVATE_KEY || 'replace with your key to test local';
 // Group complex initialize config our variables to make it simpler

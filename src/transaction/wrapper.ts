@@ -67,9 +67,8 @@ export async function saveMerkleTreeByOwner(
     }
 
     // Save snapshot
-    let snapshotResult;
-    try {
-        const { transactionHash } = await saveSnapshotByOwner(
+    const { transactionHash: snapshotTransactionHash } =
+        await saveSnapshotByOwner(
             account,
             airdropContract,
             merkleRoot,
@@ -77,18 +76,11 @@ export async function saveMerkleTreeByOwner(
             retryOptions,
             extraGasOptions,
         );
-        snapshotResult = { transactionHash };
-    } catch (error) {
-        snapshotResult = {
-            ...GENERIC_ERROR,
-            errorMessage: error.message,
-        };
-    }
+    const snapshotResult = { transactionHash: snapshotTransactionHash };
 
     // Set MerkleRoot
-    let merkleRootResult;
-    try {
-        const { transactionHash } = await saveMerkleRootByOwner(
+    const { transactionHash: merkleRootTransactionHash } =
+        await saveMerkleRootByOwner(
             account,
             airdropContract,
             tokenAddress,
@@ -96,13 +88,7 @@ export async function saveMerkleTreeByOwner(
             retryOptions,
             extraGasOptions,
         );
-        merkleRootResult = { transactionHash };
-    } catch (error) {
-        merkleRootResult = {
-            ...GENERIC_ERROR,
-            errorMessage: error.message,
-        };
-    }
+    const merkleRootResult = { transactionHash: merkleRootTransactionHash };
 
     logFunctionDuration(saveMerkleTreeByOwner.name, startTime);
     // In case of resubmit with the same data. The transaction hash will be empty
