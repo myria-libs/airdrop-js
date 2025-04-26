@@ -59,6 +59,7 @@ export async function saveMerkleTreeByOwner(
         merkleRoot,
     );
     if (shouldSkipSubmitting) {
+        console.log(`Skipping submission because it already exists onchain merkleRoot ${merkleRoot}, snapshotUri ${snapshotUri}`);
         logFunctionDuration(saveMerkleTreeByOwner.name, startTime);
         return {
             snapshotResult: ALREADY_SUBMITTED_SKIP_TRANSACTION,
@@ -76,6 +77,7 @@ export async function saveMerkleTreeByOwner(
             retryOptions,
             extraGasOptions,
         );
+    console.log(`saveSnapshotByOwner transactionHash: ${snapshotTransactionHash}`);
     const snapshotResult = { transactionHash: snapshotTransactionHash };
 
     // Set MerkleRoot
@@ -88,6 +90,7 @@ export async function saveMerkleTreeByOwner(
             retryOptions,
             extraGasOptions,
         );
+    console.log(`saveMerkleRootByOwner transactionHash: ${merkleRootTransactionHash}`);
     const merkleRootResult = { transactionHash: merkleRootTransactionHash };
 
     logFunctionDuration(saveMerkleTreeByOwner.name, startTime);
@@ -151,6 +154,7 @@ export async function approveWhitelistAndAllowance(
         tokenContract,
         totalAmount,
     );
+    console.log(`shouldSkipApproveSpender ${shouldSkipApproveSpender} and total amount: ${totalAmount}`);
     if (shouldSkipApproveSpender) {
         logFunctionDuration(approveWhitelistAndAllowance.name, startTime);
         return {
