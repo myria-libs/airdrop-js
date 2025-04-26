@@ -64,16 +64,22 @@ export const isAlreadyApprovedAllowanceOnchain = async (
     const startTime = logFunctionTrackStartTime(
         isAlreadyApprovedAllowanceOnchain.name,
     );
-    console.log(`isAlreadyApprovedAllowanceOnchain owner: ${owner}, spender: ${spender}, tokenContract: ${tokenContract.address}, totalAmount: ${totalAmount}, decimals: ${decimals}`);
+    console.log(
+        `isAlreadyApprovedAllowanceOnchain owner: ${owner}, spender: ${spender}, tokenContract: ${tokenContract.address}, totalAmount: ${totalAmount}, decimals: ${decimals}`,
+    );
     const remainingAllowance = await allowance({
         contract: tokenContract,
         owner,
         spender,
     });
-    console.log(`isAlreadyApprovedAllowanceOnchain remainingAllowance: ${remainingAllowance}`);
+    console.log(
+        `isAlreadyApprovedAllowanceOnchain remainingAllowance: ${remainingAllowance}`,
+    );
     const existedAllowance = Number(toTokens(remainingAllowance, decimals));
 
-    console.log(`isAlreadyApprovedAllowanceOnchain existedAllowance: ${existedAllowance}, totalAmount: ${totalAmount}`);
+    console.log(
+        `isAlreadyApprovedAllowanceOnchain existedAllowance: ${existedAllowance}, totalAmount: ${totalAmount}`,
+    );
     if (existedAllowance >= totalAmount) {
         return true;
     }
